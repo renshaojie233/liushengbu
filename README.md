@@ -28,7 +28,7 @@
 
 ## 界面预览
 
-![留声簿主界面预览](./docs/preview-main.png)
+![留声簿主界面预览](./docs/preview-2026-03-17-main.png)
 
 ## 功能一览
 
