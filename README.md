@@ -30,6 +30,11 @@
 
 ![留声簿主界面预览](./docs/preview-main.png)
 
+<p align="center">
+  <img src="./docs/preview-library.png" alt="留声簿历史记录侧栏" width="22%" />
+  <img src="./docs/preview-workspace.png" alt="留声簿转写工作区" width="74%" />
+</p>
+
 ## 功能一览
 
 - `🎙️ 实时录音`：点击底部主按钮即可开始或停止录音
