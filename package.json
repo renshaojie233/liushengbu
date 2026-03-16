@@ -1,0 +1,78 @@
+{
+  "name": "liushengbu",
+  "version": "1.0.0",
+  "description": "A macOS voice transcription and playback workspace powered by Doubao Speech",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build:dir": "electron-builder --mac dir",
+    "build:dmg": "electron-builder --mac dmg",
+    "build": "electron-builder --mac dmg zip"
+  },
+  "keywords": [
+    "macos",
+    "electron",
+    "transcription",
+    "speech-to-text",
+    "doubao",
+    "voice-notes"
+  ],
+  "author": "renshaojie233",
+  "license": "MIT",
+  "type": "commonjs",
+  "dependencies": {
+    "ffmpeg-static": "^5.3.0",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "electron": "^41.0.2",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.renshaojie.doubaoclassnotes",
+    "productName": "留声簿",
+    "mac": {
+      "category": "public.app-category.productivity",
+      "icon": "assets/app-icon.icns",
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "target": [
+        "dmg",
+        "zip",
+        "dir"
+      ]
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "index.html",
+      "styles.css",
+      "renderer.js",
+      "lib/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "node_modules/ffmpeg-static/ffmpeg",
+        "to": "ffmpeg-bin/ffmpeg"
+      },
+      {
+        "from": "node_modules/ffmpeg-static/ffmpeg.LICENSE",
+        "to": "ffmpeg-bin/ffmpeg.LICENSE"
+      },
+      {
+        "from": "node_modules/ffmpeg-static/README.md",
+        "to": "ffmpeg-bin/ffmpeg-static.README.md"
+      }
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/renshaojie233/liushengbu.git"
+  },
+  "homepage": "https://github.com/renshaojie233/liushengbu",
+  "bugs": {
+    "url": "https://github.com/renshaojie233/liushengbu/issues"
+  }
+}

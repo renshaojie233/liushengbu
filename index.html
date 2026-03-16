@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>留声簿</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="desktop-shell">
+      <div class="app-window">
+        <aside class="sidebar">
+          <div class="brand">
+            <div class="brand-mark" aria-hidden="true">
+              <img src="./assets/app-icon.svg" alt="" />
+            </div>
+          </div>
+          <div class="rail-group">
+            <button class="tab rail-button active" data-tab="record" aria-label="录音" data-tooltip="录音模式">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 0 0 3.5-3.5V7a3.5 3.5 0 1 0-7 0v5a3.5 3.5 0 0 0 3.5 3.5Zm-6-3.5a1 1 0 1 1 2 0 4 4 0 1 0 8 0 1 1 0 1 1 2 0 6 6 0 0 1-5 5.91V21h2a1 1 0 1 1 0 2H9a1 1 0 1 1 0-2h2v-2.09A6 6 0 0 1 6 12Z"/></svg>
+            </button>
+            <button class="tab rail-button" data-tab="playback" aria-label="回放" data-tooltip="回放模式">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6.82v10.36a1 1 0 0 0 1.53.85l8.14-5.18a1 1 0 0 0 0-1.7L9.53 5.97A1 1 0 0 0 8 6.82Z"/></svg>
+            </button>
+          </div>
+          <div class="rail-group rail-bottom">
+            <button id="openSettings" class="rail-button ghost-button" aria-label="设置" data-tooltip="打开设置">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m19.14 12.94.04-.94-.04-.94 2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.38 7.38 0 0 0-1.63-.94l-.36-2.54a.5.5 0 0 0-.49-.42h-3.84a.5.5 0 0 0-.49.42L8.22 4.32a7.38 7.38 0 0 0-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L1.68 7.84a.5.5 0 0 0 .12.64l2.03 1.58-.04.94.04.94L1.8 13.52a.5.5 0 0 0-.12.64l1.92 3.32a.5.5 0 0 0 .6.22l2.39-.96c.5.39 1.05.7 1.63.94l.36 2.54a.5.5 0 0 0 .49.42h3.84a.5.5 0 0 0 .49-.42l.36-2.54c.58-.24 1.13-.55 1.63-.94l2.39.96a.5.5 0 0 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64zM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5Z"/></svg>
+            </button>
+          </div>
+        </aside>
+
+        <main class="main">
+          <header class="topbar">
+            <div class="topbar-copy">
+              <div class="eyebrow">语音转写与回放</div>
+              <h1>留声簿</h1>
+            </div>
+            <div class="topbar-actions">
+              <div class="mode-group">
+                <div class="mode-picker" aria-label="模型模式">
+                  <button id="modeRealtime" class="mode-chip" data-tooltip="低延迟实时出字" data-tooltip-side="bottom">实时</button>
+                  <button id="modePrecise" class="mode-chip" data-tooltip="停止后生成精准稿" data-tooltip-side="bottom">精准</button>
+                  <button id="modeHybrid" class="mode-chip active" data-tooltip="实时出字并自动修正前文" data-tooltip-side="bottom">实时+精准</button>
+                </div>
+                <p id="modeHint" class="mode-hint">实时出字，并按停顿自动修正前文。</p>
+              </div>
+            </div>
+          </header>
+
+          <section id="workspace" class="workspace">
+            <aside class="library-panel">
+              <div class="library-brand">留声簿</div>
+              <div class="library-search">
+                <input id="sessionSearch" placeholder="搜索录音内容..." />
+              </div>
+              <div class="library-section">录音记录</div>
+              <div id="sessionList" class="session-list"></div>
+              <div class="library-actions">
+                <button id="pickFile" class="library-action" data-tooltip="导入本地音频并立即转写">导入音频</button>
+              </div>
+            </aside>
+
+            <section class="transcript-column panel">
+              <div class="column-toolbar">
+                <div class="toolbar-group">
+                  <button id="enhanceSession" class="toolbar-chip" data-tooltip="用精准模型重新优化整段录音">优化转写</button>
+                  <button id="exportSession" class="toolbar-chip" data-tooltip="导出文字、原始录音和 MP3" disabled>导出</button>
+                </div>
+                <span class="meta" id="transcriptMeta"></span>
+              </div>
+
+              <div class="tab-content active" data-content="record">
+                <div class="session-strip">
+                  <div class="session-dot"></div>
+                  <div>
+                    <strong id="sessionTitle">未开始</strong>
+                    <p id="recordStatus">准备录音</p>
+                  </div>
+                </div>
+              </div>
+
+              <div id="transcriptText" class="content transcript-content empty">这里会显示课堂转写结果。</div>
+              <div id="liveListeningRow" class="listening-row hidden">
+                <span class="listening-dot"></span>
+                <span id="liveListeningText">正在收听...</span>
+              </div>
+
+              <div id="playbackBar" class="playback-bar hidden">
+                <span class="meta">回放</span>
+                <audio id="playbackAudio" controls preload="metadata"></audio>
+              </div>
+            </section>
+          </section>
+
+          <div class="record-dock">
+            <button id="pauseRecord" class="dock-mini" data-tooltip="暂停录音" disabled>Ⅱ</button>
+            <button id="stopRecord" class="stop-button" data-tooltip="开始录音">●</button>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <dialog id="settingsDialog" class="settings-dialog">
+      <form method="dialog" class="settings-form">
+        <div class="dialog-head">
+          <div>
+            <div class="eyebrow">连接配置</div>
+            <h3>留声簿设置</h3>
+          </div>
+          <button value="cancel" class="ghost-button" data-tooltip="关闭设置">关闭</button>
+        </div>
+        <div class="settings-grid">
+          <label>应用 ID (App ID)<input id="cfgAppId" /></label>
+          <label>访问令牌 (Access Token)<input id="cfgAccessToken" /></label>
+          <label>密钥 (Secret Key)<input id="cfgSecretKey" /></label>
+        </div>
+        <details class="advanced-settings">
+          <summary>高级设置</summary>
+          <div class="settings-grid advanced-grid">
+            <label>集群标识 (Cluster)<input id="cfgCluster" /></label>
+            <label>资源 ID (Resource ID)<input id="cfgResourceId" /></label>
+            <label>鉴权方式 (Auth Style)
+              <select id="cfgAuthStyle">
+                <option value="x-api">X-Api 头 (X-Api Header)</option>
+                <option value="authorization">Authorization 头 (Authorization Header)</option>
+              </select>
+            </label>
+            <label>签名模式 (Auth Mode)
+              <select id="cfgAuthMode">
+                <option value="bearer">Bearer 模式 (Bearer)</option>
+                <option value="hmac">HMAC</option>
+              </select>
+            </label>
+            <label>Body Token
+              <select id="cfgBodyTokenMode">
+                <option value="raw">原始 Token (Raw)</option>
+                <option value="prefixed">Bearer; Token 前缀 (Prefixed)</option>
+              </select>
+            </label>
+          </div>
+        </details>
+        <div class="dialog-actions">
+          <button id="saveSettings" value="default" class="primary-button" data-tooltip="保存当前连接配置">保存设置</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="permissionDialog" class="settings-dialog permission-dialog">
+      <form method="dialog" class="settings-form">
+        <div class="dialog-head">
+          <div>
+            <div class="eyebrow">麦克风权限</div>
+            <h3>需要开启录音权限</h3>
+          </div>
+          <button value="cancel" class="ghost-button" data-tooltip="先关闭提示">关闭</button>
+        </div>
+        <div class="permission-copy">
+          <p>留声簿需要麦克风权限才能开始录音和实时转写。</p>
+          <ol class="permission-steps">
+            <li>点击下面的“打开系统设置”。</li>
+            <li>进入“隐私与安全性”。</li>
+            <li>打开“麦克风”。</li>
+            <li>给“留声簿”打开开关。</li>
+          </ol>
+          <p class="permission-note">如果你刚刚已经开启，回到应用后点“重新检查”即可。</p>
+        </div>
+        <div class="dialog-actions permission-actions">
+          <button id="permissionOpenSettings" type="button" class="secondary-button" data-tooltip="直达系统设置中的麦克风权限">打开系统设置</button>
+          <button id="permissionRetry" type="button" class="primary-button" data-tooltip="重新检查当前麦克风权限">重新检查</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="./renderer.js"></script>
+  </body>
+  </html>
